@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 @app.route('/')
 def hello():
-    return 'Hello, World!'
+    return 'hello world'
 
 
 if __name__ == '__main__':
