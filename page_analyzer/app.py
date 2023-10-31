@@ -9,8 +9,13 @@ from flask import (
 )
 from dotenv import load_dotenv
 from validator import validate_url
-from page_analyzer.db import get_urls_by_name
+from page_analyzer.db import (
+    get_urls_by_name,
+    get_all_urls,
+    add_website
+)
 import os
+from datetime import datetime
 
 
 load_dotenv()
@@ -55,8 +60,33 @@ def urls_post():
                                    url=url,
                                    messages=messages
                                    ), 422
+    else:
+        website = {
+            'url': url,
+            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        add_website(website)
+
+        id = get_urls_by_name(url)['id']
+
+        flash('Страница успешно добавлена', 'success')
+        return redirect(url_for(
+            'url_show',
+            id=id
+        ))
 
 
+@app.get('/urls')
+def urls_get():
+    urls = get_all_urls()
+
+    messages = get_flashed_messages(with_categories=True)
+    return render_template(
+        'urls.html',
+        urls=urls,
+        messages=messages
+    )
 
 
 if __name__ == '__main__':
