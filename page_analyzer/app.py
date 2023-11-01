@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from validator import validate_url
 from page_analyzer.db import (
     get_urls_by_name,
+    get_urls_by_id,
     get_all_urls,
     add_website
 )
@@ -87,6 +88,30 @@ def urls_get():
         urls=urls,
         messages=messages
     )
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template(
+        '404.html'
+    ), 404
+
+
+@app.route('/urls/<int:id>')
+def url_by_id(id):
+    try:
+        url = get_urls_by_id(id)
+
+        messages = get_flashed_messages(with_categories=True)
+        return render_template(
+            'url.html',
+            url=url,
+            messages=messages
+        )
+    except IndexError:
+        return render_template(
+            '404.html'
+        ), 404
 
 
 if __name__ == '__main__':

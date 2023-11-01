@@ -22,6 +22,18 @@ def get_urls_by_name(name):
     return urls
 
 
+def get_urls_by_id(id):
+    with connection.cursor() as cur:
+        select_by_id = '''SELECT *
+                    FROM urls
+                    WHERE id=(%s)'''
+        cur.execute(select_by_id, [id])
+        urls = cur.fetchone()
+    connection.close()
+
+    return urls
+
+
 def get_all_urls():
     with connection.cursor() as cur:
         select_all = '''SELECT DISTINCT ON (urls.id)
