@@ -41,19 +41,19 @@ def urls_post():
     error = validate['error']
 
     if error:
-        if error == 'This URL already exists':
+        if error == 'URL already exists':
             id = get_urls_by_name(url)['id']
 
-            flash('Странница с таким URL уже существует', 'error')
+            flash('Страница уже существует', 'fact')
 
             return redirect(url_for('url_show', id=id))
         else:
-            flash('Некорректный URL адрес', 'error')
+            flash('Некорректный URL', 'error')
 
-            if error == 'URL length cannot be zero':
-                flash('URL адрес не может быть пустым', 'error')
-            elif error == 'URL length should be shorter than 255 characters':
-                flash('Длина URL адреса превышает 255 символов', 'error')
+            if error == 'URL length = 0':
+                flash('URL обязателен', 'error')
+            elif error == 'URL length > 255 ':
+                flash('URL превышает 255 символов', 'error')
 
             messages = get_flashed_messages(with_categories=True)
 
