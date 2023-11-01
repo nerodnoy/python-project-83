@@ -8,7 +8,7 @@ from flask import (
     redirect
 )
 from dotenv import load_dotenv
-from validator import validate_url
+from valid import validate_url
 from page_analyzer.db import (
     get_urls_by_name,
     get_urls_by_id,
@@ -17,7 +17,6 @@ from page_analyzer.db import (
 )
 import os
 from datetime import datetime
-
 
 load_dotenv()
 
@@ -46,7 +45,7 @@ def urls_post():
 
             flash('Страница уже существует', 'fact')
 
-            return redirect(url_for('url_show', id=id))
+            return redirect(url_for('url_by_id', id=id))
         else:
             flash('Некорректный URL', 'error')
 
@@ -73,7 +72,7 @@ def urls_post():
 
         flash('Страница успешно добавлена', 'success')
         return redirect(url_for(
-            'url_show',
+            'url_by_id',
             id=id
         ))
 
