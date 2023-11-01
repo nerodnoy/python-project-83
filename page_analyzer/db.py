@@ -2,7 +2,6 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -34,7 +33,7 @@ def get_urls_by_id(id):
     return urls
 
 
-def get_all_urls():
+def get_urls_all():
     with connection.cursor() as cur:
         select_all = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,

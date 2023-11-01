@@ -8,11 +8,11 @@ from flask import (
     redirect
 )
 from dotenv import load_dotenv
-from valid import validate_url
+from page_analyzer.valid import validate_url
 from page_analyzer.db import (
     get_urls_by_name,
     get_urls_by_id,
-    get_all_urls,
+    get_urls_all,
     add_website
 )
 import os
@@ -79,7 +79,7 @@ def urls_post():
 
 @app.get('/urls')
 def urls_get():
-    urls = get_all_urls()
+    urls = get_urls_all()
 
     messages = get_flashed_messages(with_categories=True)
     return render_template(
