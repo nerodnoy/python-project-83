@@ -87,7 +87,7 @@ def urls_get():
 
     messages = get_flashed_messages(with_categories=True)
     return render_template(
-        'urls.html',
+        'all_urls.html',
         urls=urls,
         messages=messages
     )
