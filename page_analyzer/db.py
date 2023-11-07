@@ -64,3 +64,26 @@ def add_website(name):
         ))
         connection.commit()
     connection.close()
+
+
+def add_check(check):
+    with connection.cursor() as cur:
+        insert = '''INSERT
+                    INTO url_checks(
+                        url_id,
+                        status_code,
+                        h1,
+                        title,
+                        description,
+                        created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)'''
+        cur.execute(insert, (
+            check['url_id'],
+            check['status_code'],
+            check['h1'],
+            check['title'],
+            check['description'],
+            check['checked_at']
+        ))
+        connection.commit()
+    connection.close()
