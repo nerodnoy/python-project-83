@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from psycopg2.extras import NamedTupleCursor
+from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,7 +11,7 @@ connection = psycopg2.connect(DATABASE_URL)
 
 
 def get_urls_by_name(name):
-    with connection.cursor(cursor_factory=NamedTupleCursor) as cur:
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
         select_by_name = '''SELECT *
                     FROM urls
                     WHERE name=(%s)'''
@@ -23,7 +23,7 @@ def get_urls_by_name(name):
 
 
 def get_urls_by_id(id):
-    with connection.cursor(cursor_factory=NamedTupleCursor) as cur:
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
         select_by_id = '''SELECT *
                     FROM urls
                     WHERE id=(%s)'''
@@ -35,7 +35,7 @@ def get_urls_by_id(id):
 
 
 def get_urls_all():
-    with connection.cursor(cursor_factory=NamedTupleCursor) as cur:
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
         select_all = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
                         urls.name AS name,
@@ -55,7 +55,7 @@ def get_urls_all():
 
 
 def add_website(name):
-    with connection.cursor(cursor_factory=NamedTupleCursor) as cur:
+    with connection.cursor() as cur:
         insert_new_website = '''INSERT
                     INTO urls (name, created_at)
                     VALUES (%s, %s)'''
@@ -68,7 +68,7 @@ def add_website(name):
 
 
 def add_check(check):
-    with connection.cursor(cursor_factory=NamedTupleCursor) as cur:
+    with connection.cursor() as cur:
         insert = '''INSERT
                     INTO url_checks(
                         url_id,
