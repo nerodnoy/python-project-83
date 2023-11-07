@@ -12,4 +12,4 @@ lint:
 	poetry run flake8
 
 build:
-    ./build.sh
+	./build.sh
