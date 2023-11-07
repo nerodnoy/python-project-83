@@ -1,3 +1,27 @@
-{% extends 'layout.html' %}
+{% extends 'boiler.html' %}
 
-<!--WIP-->
+{% block input %}
+<h1>Сайты</h1>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover text-nowrap" data-test="checks">
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Последняя проверка</th>
+                <th>Код ответа</th>
+            </tr>
+            {% if urls %}
+                {% for url in urls %}
+                <tr>
+                    <td>{{ url.id }}</td>
+                    <td><a href="{{ url_for('url_by_id', id=url.id) }}">{{ url.name }}</a></td>
+                    <td>{{ url.last_check if url.last_check is not none }}</td>
+                    <td>{{ url.status_code if url.status_code is not none }}</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
