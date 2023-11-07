@@ -20,7 +20,7 @@ import os
 from datetime import datetime
 import requests
 
-load_dotenv()
+load_dotenv('../.env')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
