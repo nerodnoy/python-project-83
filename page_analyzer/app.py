@@ -18,10 +18,9 @@ from page_analyzer.db import (
 import os
 from datetime import datetime
 import requests
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 
-env_file = find_dotenv(".env")
-load_dotenv(env_file)
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
