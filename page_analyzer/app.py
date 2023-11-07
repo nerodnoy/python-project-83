@@ -49,20 +49,22 @@ def urls_post():
             flash('Страница уже существует', 'alert-fact')
 
             return redirect(url_for('url_by_id', id=id))
-        else:
+
+        elif error == 'URL length = 0':
+            flash('URL обязателен', 'alert-warning')
+
+        elif error == 'Invalid URL name':
             flash('Некорректный URL', 'alert-warning')
 
-            if error == 'URL length = 0':
-                flash('URL обязателен', 'alert-warning')
-            elif error == 'URL length > 255 ':
-                flash('URL превышает 255 символов', 'alert-warning')
+        elif error == 'URL length > 255':
+            flash('URL превышает 255 символов', 'alert-warning')
 
-            messages = get_flashed_messages(with_categories=True)
+        messages = get_flashed_messages(with_categories=True)
 
-            return render_template('index.html',
-                                   url=url,
-                                   messages=messages
-                                   ), 422
+        return render_template('index.html',
+                               url=url,
+                               messages=messages
+                               ), 422
     else:
         website = {
             'url': url,
