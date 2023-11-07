@@ -8,15 +8,17 @@ from flask import (
     redirect
 )
 from dotenv import load_dotenv
-from page_analyzer.valid import validate_url
+from page_analyzer.valid import validate_url, get_url_data
 from page_analyzer.db import (
     get_urls_by_name,
     get_urls_by_id,
     get_urls_all,
-    add_website
+    add_website,
+    add_check
 )
 import os
 from datetime import datetime
+import requests
 
 load_dotenv()
 
@@ -43,16 +45,16 @@ def urls_post():
         if error == 'URL already exists':
             id = get_urls_by_name(url)['id']
 
-            flash('Страница уже существует', 'fact')
+            flash('Страница уже существует', 'alert-fact')
 
             return redirect(url_for('url_by_id', id=id))
         else:
-            flash('Некорректный URL', 'error')
+            flash('Некорректный URL', 'alert-warning')
 
             if error == 'URL length = 0':
-                flash('URL обязателен', 'error')
+                flash('URL обязателен', 'alert-warning')
             elif error == 'URL length > 255 ':
-                flash('URL превышает 255 символов', 'error')
+                flash('URL превышает 255 символов', 'alert-warning')
 
             messages = get_flashed_messages(with_categories=True)
 
@@ -70,7 +72,7 @@ def urls_post():
 
         id = get_urls_by_name(url)['id']
 
-        flash('Страница успешно добавлена', 'success')
+        flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
             'url_by_id',
             id=id
@@ -111,6 +113,29 @@ def url_by_id(id):
         return render_template(
             '404.html'
         ), 404
+
+
+@app.post('/urls/<int:id>/checks')
+def url_check(id):
+    url = get_urls_by_id(id)['name']
+
+    try:
+        check = get_url_data(url)
+
+        check['url_id'] = id
+        check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        add_check(check)
+
+        flash('Страница успешно проверена', 'alert-success')
+
+    except requests.RequestException:
+        flash('Произошла ошибка при проверке', 'alert-danger')
+
+    return redirect(url_for(
+        'url_by_id',
+        id=id
+    ))
 
 
 if __name__ == '__main__':
