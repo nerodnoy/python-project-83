@@ -7,7 +7,6 @@ from flask import (
     url_for,
     redirect
 )
-from dotenv import load_dotenv
 from page_analyzer.valid import validate_url, get_url_data
 from page_analyzer.db import (
     get_urls_by_name,
@@ -19,8 +18,10 @@ from page_analyzer.db import (
 import os
 from datetime import datetime
 import requests
+from dotenv import find_dotenv, load_dotenv
 
-load_dotenv('../.env')
+env_file = find_dotenv(".env")
+load_dotenv(env_file)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
