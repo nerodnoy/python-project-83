@@ -7,10 +7,9 @@ load_dotenv()
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-connection = psycopg2.connect(DATABASE_URL)
-
 
 def get_urls_by_name(name):
+    connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
         q_select = '''SELECT *
                     FROM urls
@@ -23,6 +22,7 @@ def get_urls_by_name(name):
 
 
 def get_urls_by_id(id):
+    connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
         select_by_id = '''SELECT *
                     FROM urls
@@ -35,6 +35,7 @@ def get_urls_by_id(id):
 
 
 def get_urls_all():
+    connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
         select_all = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
@@ -55,6 +56,7 @@ def get_urls_all():
 
 
 def add_website(name):
+    connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor() as cur:
         insert_new_website = '''INSERT
                     INTO urls (name, created_at)
@@ -68,6 +70,7 @@ def add_website(name):
 
 
 def add_check(check):
+    connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor() as cur:
         insert = '''INSERT
                     INTO url_checks(
