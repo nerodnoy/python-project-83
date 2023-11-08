@@ -8,5 +8,3 @@ coverage.xml
 .pytest_cache/
 .idea/
 .env
-
-build.sh

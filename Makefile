@@ -10,6 +10,3 @@ start:
 
 lint:
 	poetry run flake8
-
-build:
-	./build.sh
