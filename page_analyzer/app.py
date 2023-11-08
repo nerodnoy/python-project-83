@@ -12,6 +12,7 @@ from page_analyzer.db import (
     get_urls_by_name,
     get_urls_by_id,
     get_urls_all,
+    get_checks_by_id,
     add_website,
     add_check
 )
@@ -104,11 +105,13 @@ def page_not_found(error):
 def url_by_id(id):
     try:
         url = get_urls_by_id(id)
+        checks = get_checks_by_id(id)
 
         messages = get_flashed_messages(with_categories=True)
         return render_template(
             'url.html',
             url=url,
+            checks=checks,
             messages=messages
         )
     except IndexError:

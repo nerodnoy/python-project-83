@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
@@ -54,6 +53,20 @@ def get_urls_all():
     connection.close()
 
     return urls
+
+
+def get_checks_by_id(id):
+    connection = psycopg2.connect(DATABASE_URL)
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
+        select = '''SELECT *
+                    FROM url_checks
+                    WHERE url_id=(%s)
+                    ORDER BY id DESC'''
+        cur.execute(select, [id])
+        checks = cur.fetchall()
+    connection.close()
+
+    return checks
 
 
 def add_website(name):
