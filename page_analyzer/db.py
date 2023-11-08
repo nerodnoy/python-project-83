@@ -5,7 +5,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 DATABASE_URL = os.getenv('DATABASE_URL')
+
+# тест установки соединения с базой данных
+try:
+    connection_test = psycopg2.connect(DATABASE_URL)
+    print("Соединение с базой данных успешно установлено.")
+    connection_test.close()
+except psycopg2.Error as e:
+    print(f"Ошибка при соединении с базой данных: {e}")
 
 
 def get_urls_by_name(name):
@@ -72,8 +81,7 @@ def add_website(name):
 def add_check(check):
     connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor() as cur:
-        insert = '''INSERT
-                    INTO url_checks(
+        insert = '''INSERT INTO url_checks(
                         url_id,
                         status_code,
                         h1,
@@ -81,13 +89,14 @@ def add_check(check):
                         description,
                         created_at)
                     VALUES (%s, %s, %s, %s, %s, %s)'''
-        cur.execute(insert, (
+        data = (
             check['url_id'],
             check['status_code'],
             check['h1'],
             check['title'],
             check['description'],
             check['checked_at']
-        ))
+        )
+        cur.execute(insert, data)
         connection.commit()
     connection.close()
