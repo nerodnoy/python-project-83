@@ -12,10 +12,10 @@ connection = psycopg2.connect(DATABASE_URL)
 
 def get_urls_by_name(name):
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
-        select_by_name = '''SELECT *
+        q_select = '''SELECT *
                     FROM urls
                     WHERE name=(%s)'''
-        cur.execute(select_by_name, [name])
+        cur.execute(q_select, [name])
         urls = cur.fetchone()
     connection.close()
 
