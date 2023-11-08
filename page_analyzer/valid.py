@@ -1,8 +1,8 @@
-from urllib.parse import urlparse
-from page_analyzer.db import get_urls_by_name
 import validators
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+from page_analyzer.db import get_urls_by_name
 
 
 def validate_url(url):

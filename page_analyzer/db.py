@@ -1,7 +1,7 @@
 import os
 import psycopg2
-from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
+from psycopg2.extras import RealDictCursor
 
 load_dotenv()
 
@@ -11,10 +11,10 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 def get_urls_by_name(name):
     connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
-        q_select = '''SELECT *
+        select = '''SELECT *
                     FROM urls
                     WHERE name=(%s)'''
-        cur.execute(q_select, [name])
+        cur.execute(select, [name])
         urls = cur.fetchone()
     connection.close()
 
@@ -72,13 +72,14 @@ def get_checks_by_id(id):
 def add_website(name):
     connection = psycopg2.connect(DATABASE_URL)
     with connection.cursor() as cur:
-        insert_new_website = '''INSERT
+        insert = '''INSERT
                     INTO urls (name, created_at)
                     VALUES (%s, %s)'''
-        cur.execute(insert_new_website, (
+        data = (
             name['url'],
             name['created_at']
-        ))
+        )
+        cur.execute(insert, data)
         connection.commit()
     connection.close()
 

@@ -7,7 +7,6 @@ from flask import (
     url_for,
     redirect
 )
-from page_analyzer.valid import validate_url, get_url_data
 from page_analyzer.db import (
     get_urls_by_name,
     get_urls_by_id,
@@ -18,8 +17,9 @@ from page_analyzer.db import (
 )
 import os
 from datetime import datetime
-import requests
 from dotenv import load_dotenv
+from requests import RequestException
+from page_analyzer.valid import validate_url, get_url_data
 
 load_dotenv()
 
@@ -76,6 +76,7 @@ def urls_post():
         id = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
+
         return redirect(url_for(
             'url_by_id',
             id=id
@@ -87,6 +88,7 @@ def urls_get():
     urls = get_urls_all()
 
     messages = get_flashed_messages(with_categories=True)
+
     return render_template(
         'all_urls.html',
         urls=urls,
@@ -101,6 +103,7 @@ def url_by_id(id):
         checks = get_checks_by_id(id)
 
         messages = get_flashed_messages(with_categories=True)
+
         return render_template(
             'url.html',
             url=url,
@@ -127,7 +130,7 @@ def url_check(id):
 
         flash('Страница успешно проверена', 'alert-success')
 
-    except requests.RequestException:
+    except RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
 
     return redirect(url_for(
