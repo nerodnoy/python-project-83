@@ -5,7 +5,8 @@ from flask import (
     flash,
     get_flashed_messages,
     url_for,
-    redirect
+    redirect,
+    abort
 )
 from page_analyzer.valid import validate_url, get_url_data
 from page_analyzer.db import (
@@ -108,9 +109,7 @@ def url_by_id(id):
             messages=messages
         )
     except IndexError:
-        return render_template(
-            '404.html'
-        ), 404
+        abort(404)
 
 
 @app.post('/urls/<int:id>/checks')
