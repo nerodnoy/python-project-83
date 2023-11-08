@@ -46,18 +46,18 @@ def urls_post():
         if error == 'URL already exists':
             id = get_urls_by_name(url)['id']
 
-            flash('Страница уже существует', 'alert-fact')
+            flash('Страница уже существует', 'alert-info')
 
             return redirect(url_for('url_by_id', id=id))
 
         elif error == 'URL length = 0':
-            flash('URL обязателен', 'alert-warning')
+            flash('URL обязателен', 'alert-danger')
 
         elif error == 'Invalid URL name':
-            flash('Некорректный URL', 'alert-warning')
+            flash('Некорректный URL', 'alert-danger')
 
         elif error == 'URL length > 255':
-            flash('URL превышает 255 символов', 'alert-warning')
+            flash('URL превышает 255 символов', 'alert-danger')
 
         messages = get_flashed_messages(with_categories=True)
 
@@ -92,13 +92,6 @@ def urls_get():
         urls=urls,
         messages=messages
     )
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template(
-        '404.html'
-    ), 404
 
 
 @app.route('/urls/<int:id>')
@@ -141,6 +134,13 @@ def url_check(id):
         'url_by_id',
         id=id
     ))
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template(
+        '404.html'
+    ), 404
 
 
 if __name__ == '__main__':
