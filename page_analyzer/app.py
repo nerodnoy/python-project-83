@@ -64,7 +64,7 @@ def urls_post():
                                    url=url,
                                    messages=messages
                                    ), 422
-        case None:
+        case _:
             website = {
                 'url': url,
                 'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
