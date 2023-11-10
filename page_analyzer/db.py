@@ -12,12 +12,15 @@ def execute_query(query, data=None, fetchall=False, commit=False):
     with psycopg2.connect(DATABASE_URL) as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, data)
+            if commit:
+                connection.commit()
+                return  # Если есть commit, завершаем выполнение функции
+
             if fetchall:
                 result = cursor.fetchall()
             else:
                 result = cursor.fetchone()
-            if commit:
-                connection.commit()
+
         return result
 
 
@@ -28,6 +31,11 @@ def get_urls_by_name(name):
 
 def get_urls_by_id(id):
     query = 'SELECT * FROM urls WHERE id = %s'
+    return execute_query(query, [id])
+
+
+def get_checks_by_id(id):
+    query = 'SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC'
     return execute_query(query, [id])
 
 
@@ -48,11 +56,6 @@ def get_urls_all():
         ORDER BY urls.id DESC;
     '''
     return execute_query(query, fetchall=True)
-
-
-def get_checks_by_id(id):
-    query = 'SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC'
-    return execute_query(query, [id], fetchall=True)
 
 
 def add_website(name):
