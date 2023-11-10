@@ -12,9 +12,10 @@ def execute_query(query, data=None, fetchall=False, commit=False):
     with psycopg2.connect(DATABASE_URL) as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, data)
+
             if commit:
                 connection.commit()
-                return  # Если есть commit, завершаем выполнение функции
+                return
 
             if fetchall:
                 result = cursor.fetchall()
@@ -25,24 +26,17 @@ def execute_query(query, data=None, fetchall=False, commit=False):
 
 
 def get_urls_by_name(name):
-    query = '''SELECT *
-                FROM urls
-                WHERE name=(%s)'''
+    query = 'SELECT * FROM urls WHERE name=(%s)'
     return execute_query(query, [name])
 
 
 def get_urls_by_id(id):
-    query = '''SELECT *
-                FROM urls
-                WHERE id=(%s)'''
+    query = 'SELECT * FROM urls WHERE id=(%s)'
     return execute_query(query, [id])
 
 
 def get_checks_by_id(id):
-    query = '''SELECT *
-                FROM url_checks
-                WHERE url_id=(%s)
-                ORDER BY id DESC'''
+    query = 'SELECT * FROM url_checks WHERE url_id=(%s) ORDER BY id DESC'
     return execute_query(query, [id], fetchall=True)
 
 
@@ -66,9 +60,7 @@ def get_urls_all():
 
 
 def add_website(name):
-    query = '''INSERT
-                INTO urls (name, created_at)
-                VALUES (%s, %s)'''
+    query = 'INSERT INTO urls (name, created_at) VALUES (%s, %s)'
     data = (name['url'], name['created_at'])
     execute_query(query, data, commit=True)
 
