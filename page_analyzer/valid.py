@@ -9,11 +9,11 @@ def validate_url(url):
     error = None
 
     if len(url) == 0:
-        error = 'URL length = 0'
+        error = 'empty'
     elif len(url) > 255:
-        error = 'URL length > 255'
+        error = 'too long'
     elif not validators.url(url):
-        error = 'Invalid URL name'
+        error = 'invalid'
     else:
         parsed_url = urlparse(url)
         valid_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
@@ -21,7 +21,7 @@ def validate_url(url):
         same_url_found = get_urls_by_name(valid_url)
 
         if same_url_found:
-            error = 'URL already exists'
+            error = 'exists'
 
         url = valid_url
 

@@ -39,48 +39,46 @@ def urls_post():
     url = request.form.get('url')
     validate = validate_url(url)
 
-    url = validate['url']
-    error = validate['error']
-
-    if error:
-        if error == 'URL already exists':
+    match validate['error']:
+        case 'exists':
             id = get_urls_by_name(url)['id']
-
             flash('Страница уже существует', 'alert-info')
 
-            return redirect(url_for('url_by_id', id=id))
+            return redirect(url_for(
+                'url_by_id',
+                id=id
+            ))
 
-        elif error == 'URL length = 0':
+        case 'empty':
             flash('URL обязателен', 'alert-danger')
 
-        elif error == 'Invalid URL name':
+        case 'invalid':
             flash('Некорректный URL', 'alert-danger')
 
-        elif error == 'URL length > 255':
+        case 'too long':
             flash('URL превышает 255 символов', 'alert-danger')
 
-        messages = get_flashed_messages(with_categories=True)
+            messages = get_flashed_messages(with_categories=True)
 
-        return render_template('index.html',
-                               url=url,
-                               messages=messages
-                               ), 422
-    else:
-        website = {
-            'url': url,
-            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
+            return render_template('index.html',
+                                   url=url,
+                                   messages=messages
+                                   ), 422
+        case None:
+            website = {
+                'url': url,
+                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            add_website(website)
 
-        add_website(website)
+            id = get_urls_by_name(url)['id']
 
-        id = get_urls_by_name(url)['id']
+            flash('Страница успешно добавлена', 'alert-success')
 
-        flash('Страница успешно добавлена', 'alert-success')
-
-        return redirect(url_for(
-            'url_by_id',
-            id=id
-        ))
+            return redirect(url_for(
+                'url_by_id',
+                id=id
+            ))
 
 
 @app.get('/urls')
