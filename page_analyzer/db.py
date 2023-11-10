@@ -8,14 +8,17 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def execute_query(query, data=None, fetchall=False):
+def execute_query(query, data=None, fetchall=False, commit=False):
     with psycopg2.connect(DATABASE_URL) as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, data)
             if fetchall:
-                return cursor.fetchall()
+                result = cursor.fetchall()
             else:
-                return cursor.fetchone()
+                result = cursor.fetchone()
+            if commit:
+                connection.commit()
+        return result
 
 
 def get_urls_by_name(name):
@@ -55,8 +58,7 @@ def get_checks_by_id(id):
 def add_website(name):
     query = 'INSERT INTO urls (name, created_at) VALUES (%s, %s)'
     data = (name['url'], name['created_at'])
-    # убрал fetchall
-    execute_query(query, data)
+    execute_query(query, data, commit=True)
 
 
 def add_check(check):
@@ -78,4 +80,4 @@ def add_check(check):
         check['description'],
         check['checked_at']
     )
-    execute_query(query, data, fetchall=False)
+    execute_query(query, data, commit=True)
