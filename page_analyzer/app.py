@@ -8,21 +8,17 @@ from flask import (
     redirect
 )
 from page_analyzer.db import (
-    get_urls_by_name,
     get_urls_by_id,
     get_urls_all,
     get_checks_by_id,
-    add_website,
     add_check
 )
-from page_analyzer.const import (
-    URL_EXISTS,
-    URL_TOO_LONG,
-    URL_INVALID,
-    URL_EMPTY
+from page_analyzer.handler import (
+    handle_error,
+    handle_success,
+    format_timestamp
 )
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 from requests import RequestException
 from page_analyzer.valid import validate_url, get_url_data
@@ -35,9 +31,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 @app.route('/')
 def index():
-    return render_template(
-        'index.html'
-    )
+    return render_template('index.html')
 
 
 @app.post('/urls')
@@ -48,45 +42,11 @@ def urls_post():
     url = validate['url']
     error = validate['error']
 
+    # вынесены в отдельный модуль handlers
     if error:
-        if error == URL_EXISTS:
-            id = get_urls_by_name(url)['id']
-
-            flash('Страница уже существует', 'alert-info')
-
-            return redirect(url_for('url_by_id', id=id))
-
-        elif error == URL_EMPTY:
-            flash('URL обязателен', 'alert-danger')
-
-        elif error == URL_INVALID:
-            flash('Некорректный URL', 'alert-danger')
-
-        elif error == URL_TOO_LONG:
-            flash('URL превышает 255 символов', 'alert-danger')
-
-        messages = get_flashed_messages(with_categories=True)
-
-        return render_template('index.html',
-                               url=url,
-                               messages=messages
-                               ), 422
+        return handle_error(error, url)
     else:
-        website = {
-            'url': url,
-            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-
-        add_website(website)
-
-        id = get_urls_by_name(url)['id']
-
-        flash('Страница успешно добавлена', 'alert-success')
-
-        return redirect(url_for(
-            'url_by_id',
-            id=id
-        ))
+        return handle_success(url)
 
 
 @app.get('/urls')
@@ -130,7 +90,7 @@ def url_check(id):
         check = get_url_data(url)
 
         check['url_id'] = id
-        check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        check['checked_at'] = format_timestamp()
 
         add_check(check)
 
@@ -146,7 +106,7 @@ def url_check(id):
 
 
 @app.errorhandler(500)
-def page_not_found(error):
+def get_error(error):
     return render_template(
         'error.html'
     ), 500
