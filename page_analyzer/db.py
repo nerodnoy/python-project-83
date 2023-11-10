@@ -55,7 +55,8 @@ def get_checks_by_id(id):
 def add_website(name):
     query = 'INSERT INTO urls (name, created_at) VALUES (%s, %s)'
     data = (name['url'], name['created_at'])
-    execute_query(query, data, fetchall=False)
+    # убрал fetchall
+    execute_query(query, data)
 
 
 def add_check(check):
