@@ -39,46 +39,51 @@ def urls_post():
     url = request.form.get('url')
     validate = validate_url(url)
 
-    match validate['error']:
-        case 'exists':
-            id = get_urls_by_name(url)['id']
-            flash('Страница уже существует', 'alert-info')
+    url = validate['url']
+    error = validate['error']
 
-            return redirect(url_for(
-                'url_by_id',
-                id=id
-            ))
+    if error:
+        match error:
+            case 'exists':
+                id = get_urls_by_name(url)['id']
+                flash('Страница уже существует', 'alert-info')
+                return redirect(url_for(
+                    'url_by_id',
+                    id=id
+                ))
 
-        case 'empty':
-            flash('URL обязателен', 'alert-danger')
+            case 'empty':
+                flash('URL обязателен', 'alert-danger')
 
-        case 'invalid':
-            flash('Некорректный URL', 'alert-danger')
+            case 'invalid':
+                flash('Некорректный URL', 'alert-danger')
 
-        case 'too long':
-            flash('URL превышает 255 символов', 'alert-danger')
+            case 'too long':
+                flash('URL превышает 255 символов', 'alert-danger')
 
-            messages = get_flashed_messages(with_categories=True)
+            case _:
+                messages = get_flashed_messages(with_categories=True)
 
-            return render_template('index.html',
-                                   url=url,
-                                   messages=messages
-                                   ), 422
-        case _:
-            website = {
-                'url': url,
-                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-            add_website(website)
+                return render_template('index.html',
+                                       url=url,
+                                       messages=messages
+                                       ), 422
+    else:
+        website = {
+            'url': url,
+            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
 
-            id = get_urls_by_name(url)['id']
+        add_website(website)
 
-            flash('Страница успешно добавлена', 'alert-success')
+        id = get_urls_by_name(url)['id']
 
-            return redirect(url_for(
-                'url_by_id',
-                id=id
-            ))
+        flash('Страница успешно добавлена', 'alert-success')
+
+        return redirect(url_for(
+            'url_by_id',
+            id=id
+        ))
 
 
 @app.get('/urls')
