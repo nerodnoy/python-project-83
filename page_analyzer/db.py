@@ -43,7 +43,7 @@ def get_checks_by_id(id):
                 FROM url_checks
                 WHERE url_id=(%s)
                 ORDER BY id DESC'''
-    return execute_query(query, [id])
+    return execute_query(query, [id], fetchall=True)
 
 
 def get_urls_all():
