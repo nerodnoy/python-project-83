@@ -5,11 +5,11 @@ from flask import (
     url_for,
     redirect
 )
-from page_analyzer.db import (
+from page_analyzer.database import (
     get_urls_by_name,
     add_website,
 )
-from page_analyzer.const import (
+from page_analyzer.constants import (
     URL_EXISTS,
     URL_TOO_LONG,
     URL_INVALID,

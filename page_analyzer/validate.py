@@ -1,4 +1,4 @@
-from page_analyzer.const import (
+from page_analyzer.constants import (
     URL_EXISTS,
     URL_TOO_LONG,
     URL_INVALID,
@@ -8,7 +8,7 @@ import validators
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-from page_analyzer.db import get_urls_by_name
+from page_analyzer.database import get_urls_by_name
 
 
 def validate_url(url):

@@ -7,13 +7,13 @@ from flask import (
     url_for,
     redirect
 )
-from page_analyzer.db import (
+from page_analyzer.database import (
     get_urls_by_id,
     get_urls_all,
     get_checks_by_id,
     add_check
 )
-from page_analyzer.handler import (
+from page_analyzer.handlers import (
     handle_error,
     handle_success,
     format_timestamp
@@ -21,7 +21,7 @@ from page_analyzer.handler import (
 import os
 from dotenv import load_dotenv
 from requests import RequestException
-from page_analyzer.valid import validate_url, get_url_data
+from page_analyzer.validate import validate_url, get_url_data
 
 load_dotenv()
 
@@ -42,7 +42,6 @@ def urls_post():
     url = validate['url']
     error = validate['error']
 
-    # вынесены в отдельный модуль handlers
     if error:
         return handle_error(error, url)
     else:
@@ -56,7 +55,7 @@ def urls_get():
     messages = get_flashed_messages(with_categories=True)
 
     return render_template(
-        'all_urls.html',
+        'urls.html',
         urls=urls,
         messages=messages
     )
