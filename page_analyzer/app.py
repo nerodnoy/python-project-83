@@ -43,31 +43,28 @@ def urls_post():
     error = validate['error']
 
     if error:
-        match error:
-            case 'exists':
-                id = get_urls_by_name(url)['id']
-                flash('Страница уже существует', 'alert-info')
-                return redirect(url_for(
-                    'url_by_id',
-                    id=id
-                ))
+        if error == 'exists':
+            id = get_urls_by_name(url)['id']
 
-            case 'empty':
-                flash('URL обязателен', 'alert-danger')
+            flash('Страница уже существует', 'alert-info')
 
-            case 'invalid':
-                flash('Некорректный URL', 'alert-danger')
+            return redirect(url_for('url_by_id', id=id))
 
-            case 'too long':
-                flash('URL превышает 255 символов', 'alert-danger')
+        elif error == 'empty':
+            flash('URL обязателен', 'alert-danger')
 
-            case _:
-                messages = get_flashed_messages(with_categories=True)
+        elif error == 'invalid':
+            flash('Некорректный URL', 'alert-danger')
 
-                return render_template('index.html',
-                                       url=url,
-                                       messages=messages
-                                       ), 422
+        elif error == 'too long':
+            flash('URL превышает 255 символов', 'alert-danger')
+
+        messages = get_flashed_messages(with_categories=True)
+
+        return render_template('index.html',
+                               url=url,
+                               messages=messages
+                               ), 422
     else:
         website = {
             'url': url,
