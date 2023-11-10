@@ -15,6 +15,12 @@ from page_analyzer.db import (
     add_website,
     add_check
 )
+from page_analyzer.const import (
+    URL_EXISTS,
+    URL_TOO_LONG,
+    URL_INVALID,
+    URL_EMPTY
+)
 import os
 from datetime import datetime
 from dotenv import load_dotenv
@@ -36,27 +42,27 @@ def index():
 
 @app.post('/urls')
 def urls_post():
-    url = request.form.get('url')
-    validate = validate_url(url)
+    submitted_url = request.form.get('url')
+    validate = validate_url(submitted_url)
 
     url = validate['url']
     error = validate['error']
 
     if error:
-        if error == 'exists':
+        if error == URL_EXISTS:
             id = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
 
             return redirect(url_for('url_by_id', id=id))
 
-        elif error == 'empty':
+        elif error == URL_EMPTY:
             flash('URL обязателен', 'alert-danger')
 
-        elif error == 'invalid':
+        elif error == URL_INVALID:
             flash('Некорректный URL', 'alert-danger')
 
-        elif error == 'too long':
+        elif error == URL_TOO_LONG:
             flash('URL превышает 255 символов', 'alert-danger')
 
         messages = get_flashed_messages(with_categories=True)

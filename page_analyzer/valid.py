@@ -1,3 +1,9 @@
+from page_analyzer.const import (
+    URL_EXISTS,
+    URL_TOO_LONG,
+    URL_INVALID,
+    URL_EMPTY
+)
 import validators
 import requests
 from bs4 import BeautifulSoup
@@ -9,11 +15,11 @@ def validate_url(url):
     error = None
 
     if len(url) == 0:
-        error = 'empty'
+        error = URL_EMPTY
     elif len(url) > 255:
-        error = 'too long'
+        error = URL_TOO_LONG
     elif not validators.url(url):
-        error = 'invalid'
+        error = URL_INVALID
     else:
         parsed_url = urlparse(url)
         valid_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
@@ -21,7 +27,7 @@ def validate_url(url):
         same_url_found = get_urls_by_name(valid_url)
 
         if same_url_found:
-            error = 'exists'
+            error = URL_EXISTS
 
         url = valid_url
 
