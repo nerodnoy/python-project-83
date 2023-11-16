@@ -37,7 +37,8 @@ def handle_error(error, url):
             url (str): The URL causing the error.
 
         Returns:
-            tuple: Tuple containing rendered HTML template, HTTP status code (422).
+            tuple: Tuple containing rendered HTML template,
+             HTTP status code (422).
         """
     if error == URL_EXISTS:
         id = get_urls_by_name(url)['id']

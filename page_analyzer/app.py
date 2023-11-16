@@ -82,13 +82,15 @@ def urls_get():
 @app.route('/urls/<int:id>')
 def url_by_id(id):
     """
-    Handle the request to display information about a specific URL and its checks.
+    Handle the request to display information about a
+    specific URL and its checks.
 
         Args:
             id (int): The ID of the URL.
 
         Returns:
-            str: Rendered HTML template with information about the URL and its checks.
+            str: Rendered HTML template with information about
+            the URL and its checks.
     """
     try:
         url = get_urls_by_id(id)

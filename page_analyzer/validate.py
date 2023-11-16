@@ -19,7 +19,8 @@ def validate_url(url):
             url (str): The URL to be validated.
 
         Returns:
-            dict: A dictionary containing the validated URL and any potential error.
+            dict: A dictionary containing the validated URL and
+             any potential error.
     """
     error = None
 
