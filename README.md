@@ -1,43 +1,68 @@
 <div align="center">
 
+<!-- СГЕНЕРИРОВАТЬ КАРТИНКУ -->
+
 ![picture](PICTURE URL)
 
 <h1>Page analyzer</h1>
 
-Analyze specified pages for SEO suitability
+<p>Analyze specified pages for SEO suitability</p>
 
-[![Actions Status](https://github.com/nerodnoy/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/nerodnoy/python-project-83/actions)  [![main](https://github.com/nerodnoy/python-project-83/actions/workflows/main.yml/badge.svg)](https://github.com/nerodnoy/python-project-83/actions/workflows/main.yml)  [![Maintainability](https://api.codeclimate.com/v1/badges/6821107fb50b52edd52a/maintainability)](https://codeclimate.com/github/nerodnoy/python-project-83/maintainability)
+<!--<a href="https://github.com/gofiber/fiber/blob/master/.github/README.md">-->
+<img height="20px" src="https://img.shields.io/badge/EN-flag.svg?color=555555&style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNjAgMzAiIGhlaWdodD0iNjAwIj4NCjxkZWZzPg0KPGNsaXBQYXRoIGlkPSJ0Ij4NCjxwYXRoIGQ9Im0zMCwxNWgzMHYxNXp2MTVoLTMwemgtMzB2LTE1enYtMTVoMzB6Ii8+DQo8L2NsaXBQYXRoPg0KPC9kZWZzPg0KPHBhdGggZmlsbD0iIzAwMjQ3ZCIgZD0ibTAsMHYzMGg2MHYtMzB6Ii8+DQo8cGF0aCBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIgZD0ibTAsMGw2MCwzMG0wLTMwbC02MCwzMCIvPg0KPHBhdGggc3Ryb2tlPSIjY2YxNDJiIiBzdHJva2Utd2lkdGg9IjQiIGQ9Im0wLDBsNjAsMzBtMC0zMGwtNjAsMzAiIGNsaXAtcGF0aD0idXJsKCN0KSIvPg0KPHBhdGggc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEwIiBkPSJtMzAsMHYzMG0tMzAtMTVoNjAiLz4NCjxwYXRoIHN0cm9rZT0iI2NmMTQyYiIgc3Ryb2tlLXdpZHRoPSI2IiBkPSJtMzAsMHYzMG0tMzAtMTVoNjAiLz4NCjwvc3ZnPg0K">
+<!--</a>-->
 
-<a href="#about">About</a> •
-<a href="#installation">Installation</a> •
-<a href="#usage">Usage</a> •
-<a href="#requirements">Requirements</a> •
-<a href="#demonstration">Demonstration</a>
+<a href="https://github.com/nerodnoy/python-project-83/README_ru.md">
+<img height="20px" src="https://img.shields.io/badge/RU-flag.svg?color=555555&style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NTAgMzAwIj4NCjxwYXRoIGZpbGw9IiNmZmYiIGQ9Im0wLDBoNDUwdjEwMGgtNDUweiIvPg0KPHBhdGggZmlsbD0iIzAwZiIgZD0ibTAsMTAwaDQ1MHYxMDBoLTQ1MHoiLz4NCjxwYXRoIGZpbGw9IiNmMDAiIGQ9Im0wLDIwMGg0NTB2MTAwaC00NTB6Ii8+DQo8L3N2Zz4NCg==">
+</a>
+
+[![Actions Status](https://github.com/nerodnoy/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/nerodnoy/python-project-83/actions)  [![main](https://github.com/nerodnoy/python-project-83/actions/workflows/linter-tests.yml/badge.svg)](https://github.com/nerodnoy/python-project-83/actions/workflows/linter-tests.yml)  [![Maintainability](https://api.codeclimate.com/v1/badges/6821107fb50b52edd52a/maintainability)](https://codeclimate.com/github/nerodnoy/python-project-83/maintainability)
 
 </div>
 
-## About
+## 📝 About The Project
 
-TEXT TEXT TEXT
+Very interesting description here 
 
-> This project was created by [Hexlet.io](https://hexlet.io) student as a part of
+Very interesting description here 
+
+Very interesting description here 
+
+![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+<!--
+> 🎓 This project was created by [Hexlet.io](https://hexlet.io) student as a part of
 > a ["Python Developer"](https://ru.hexlet.io/programs/python) learning course.
+-->
+
+## 🎯 Features
+
+* [X] Totally valid feature 
+* [X] Totally valid feature 
+* [X] Totally valid feature 
+* [X] Totally valid feature
+
+![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+## 🖥 Demonstration
+
+Check out the demo version deployed on Render: https://nerodnoy.onrender.com
+
+![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+## ⚙️ Built With
+
+  * Python <img src="https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png" alt="Python" width="30" height="30" style="vertical-align: middle; margin-right: 10px;"> 
+
+  * Flask <img src="https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png" alt="Flask" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
+
+  * Bootstrap <img src="https://user-images.githubusercontent.com/25181517/183898054-b3d693d4-dafb-4808-a509-bab54cf5de34.png" alt="Bootstrap" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
+
+  * PostgreSQL <img src="https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png" alt="PostgreSQL" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
 
 
-## Installation
+<a>[Back to top](#-about-the-project)</a>
 
+![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-## Usage
-
-
-## Requirements
-
-Python = "^3.11"  
-
-
-## Demonstration
-
-[Demonstration](https://nerodnoy.onrender.com)
-
-
-👨‍🎨 Image was generated by [fusionbrain.ai](https://fusionbrain.ai/en/)
+👨‍🎨 Project image was generated by [fusionbrain.ai](https://fusionbrain.ai/en/)
