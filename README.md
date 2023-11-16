@@ -1,4 +1,3 @@
-<div align="center">
   <div style="float: left; text-align: left;">
     <h1>Page analyzer</h1>
     <p>Analyze specified pages for SEO suitability</p>
@@ -14,10 +13,9 @@
 
   <div style="float: right;">
     <a href="https://ibb.co/d7v4yn6">
-      <img src="https://i.ibb.co/fQWd7mt/pngwing-com-14.png" alt="seo" border="0" width="400" />
+      <img align="right" width="400" src="https://i.ibb.co/fQWd7mt/pngwing-com-14.png" border="0"/>
     </a>
   </div>
-</div>
 
 ![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
