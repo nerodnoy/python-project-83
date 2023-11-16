@@ -1,7 +1,5 @@
 <div align="center">
 
-<!-- СГЕНЕРИРОВАТЬ КАРТИНКУ -->
-
 ![picture](PICTURE URL)
 
 <h1>Page analyzer</h1>
@@ -20,48 +18,68 @@
 
 </div>
 
-## 📝 About The Project
+### 📝 About The Project
 
-Very interesting description here 
+Page Analyzer is an application based on the Flask framework that analyzes specified pages for SEO suitability.
 
-Very interesting description here 
-
-Very interesting description here 
+Page Analyzer is not just a tool; it's your companion in optimizing web content for better search engine rankings. Whether you're a seasoned SEO professional or a beginner looking to enhance your online presence, Page Analyzer is here to simplify the process and provide valuable insights for effective SEO strategies.
 
 ![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-<!--
-> 🎓 This project was created by [Hexlet.io](https://hexlet.io) student as a part of
-> a ["Python Developer"](https://ru.hexlet.io/programs/python) learning course.
--->
+### 🎯 Features
 
-## 🎯 Features
-
-* [X] Totally valid feature 
-* [X] Totally valid feature 
-* [X] Totally valid feature 
-* [X] Totally valid feature
+* [X] Validate and normalize URLs to ensure accurate and consistent analysis.
+* [X] Verify the availability of the specified web pages to ensure that they can be properly analyzed.
+* [X] Query the desired site, gather crucial information, and add it to the database for in-depth analysis.
+* [X] Evaluate SEO metrics such as headers, titles and descriptions to provide insights into the page's search engine optimization.
+* [X] Access a clean and intuitive interface for easy navigation and interaction with the analysis results.
+* [X] Store and retrieve analyzed data efficiently through integration with a PostgreSQL database.
+* [X] Track and display historical checks for a specified URL, allowing users to monitor changes over time.
 
 ![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-## 🖥 Demonstration
+### 🖥 Demonstration
 
 Check out the demo version deployed on Render: https://nerodnoy.onrender.com
 
 ![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-## ⚙️ Built With
+### ⚡️How to Use:
 
-  * Python <img src="https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png" alt="Python" width="30" height="30" style="vertical-align: middle; margin-right: 10px;"> 
+1. **Add URL for Analysis:**
+   - Submit any URL you want to analyze; the application will automatically validate and normalize it.
+   - The URL will be added to the database for further analysis.
 
-  * Flask <img src="https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png" alt="Flask" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
+2. **Check Site Availability:**
+   - Ensure the specified site is available for analysis.
 
-  * Bootstrap <img src="https://user-images.githubusercontent.com/25181517/183898054-b3d693d4-dafb-4808-a509-bab54cf5de34.png" alt="Bootstrap" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
+3. **Perform SEO Analysis:**
+   - Retrieve detailed information about the page, including SEO-related metrics.
 
-  * PostgreSQL <img src="https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png" alt="PostgreSQL" width="30" height="30" style="vertical-align: middle; margin-right: 10px;">
+4. **View All Added URLs:**
+   - Display a list of all added URLs for quick reference.
+
+5. **Individual URL Details:**
+   - Explore specific details for each entered URL on a dedicated page.
+
+![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+### ⚙️ Built With:
+
+  * Python: The core language for building the application. <img src="https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png" alt="Python" width="30" height="30"> 
+
+  * Flask Framework: Providing a robust foundation for web development. <img src="https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png" alt="Flask" width="30" height="30">
+
+  * Bootstrap: Crafting an intuitive and visually appealing user interface. <img src="https://user-images.githubusercontent.com/25181517/183898054-b3d693d4-dafb-4808-a509-bab54cf5de34.png" alt="Bootstrap" width="30" height="30">
+
+  * PostgreSQL: Storing and managing data efficiently. <img src="https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png" alt="PostgreSQL" width="30" height="30">
 
 
-<a>[Back to top](#-about-the-project)</a>
+<!-- <a>[Back to top](#-about-the-project)</a> -->
+
+<div style="position: fixed; bottom: 10px; right: 10px;">
+  <a href="#-about-the-project">Back to top</a>
+</div>
 
 ![separator](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
