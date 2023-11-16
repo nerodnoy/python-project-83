@@ -1,5 +1,5 @@
   <div style="float: left; text-align: left;">
-    <h1>Page analyzer</h1>
+    <h2>Page analyzer</h2>
     <p>Analyze specified pages for SEO suitability</p>
     <a href="https://github.com/nerodnoy/python-project-83/README_ru.md">
       <img height="20px" src="https://img.shields.io/badge/RU-flag.svg?color=555555&style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NTAgMzAwIj4NCjxwYXRoIGZpbGw9IiNmZmYiIGQ9Im0wLDBoNDUwdjEwMGgtNDUweiIvPg0KPHBhdGggZmlsbD0iIzAwZiIgZD0ibTAsMTAwaDQ1MHYxMDBoLTQ1MHoiLz4NCjxwYXRoIGZpbGw9IiNmMDAiIGQ9Im0wLDIwMGg0NTB2MTAwaC00NTB6Ii8+DQo8L3N2Zz4NCg==">
@@ -13,7 +13,7 @@
 
   <div style="float: right;">
     <a href="https://ibb.co/d7v4yn6">
-      <img align="right" width="400" src="https://i.ibb.co/fQWd7mt/pngwing-com-14.png" border="0"/>
+      <img align="right" width="300" src="https://i.ibb.co/fQWd7mt/pngwing-com-14.png" border="0"/>
     </a>
   </div>
 
