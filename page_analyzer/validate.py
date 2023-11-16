@@ -12,6 +12,15 @@ from page_analyzer.database import get_urls_by_name
 
 
 def validate_url(url):
+    """
+    Validate a URL for various criteria.
+
+        Args:
+            url (str): The URL to be validated.
+
+        Returns:
+            dict: A dictionary containing the validated URL and any potential error.
+    """
     error = None
 
     if len(url) == 0:
@@ -37,6 +46,16 @@ def validate_url(url):
 
 
 def get_url_data(url):
+    """
+    Retrieve data from a URL, including the HTTP status code, h1 tag, title tag,
+    and meta description tag.
+
+        Args:
+            url (str): The URL to retrieve data from.
+
+        Returns:
+            dict: A dictionary containing data retrieved from the URL.
+    """
     r = requests.get(url)
 
     if r.status_code != 200:

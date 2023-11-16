@@ -19,10 +19,26 @@ from datetime import datetime
 
 
 def format_timestamp():
+    """
+    Format the current timestamp as a string.
+
+        Returns:
+            str: Formatted timestamp string.
+    """
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def handle_error(error, url):
+    """
+    Handle errors during URL validation and processing.
+
+        Args:
+            error (str): The error code indicating the type of error.
+            url (str): The URL causing the error.
+
+        Returns:
+            tuple: Tuple containing rendered HTML template, HTTP status code (422).
+        """
     if error == URL_EXISTS:
         id = get_urls_by_name(url)['id']
         flash('Страница уже существует', 'alert-info')
@@ -43,6 +59,15 @@ def handle_error(error, url):
 
 
 def handle_success(url):
+    """
+    Handle successful URL validation and addition.
+
+        Args:
+            url (str): The validated URL.
+
+        Returns:
+            str: Redirects to the details page of the added URL.
+    """
     website = {'url': url, 'created_at': format_timestamp()}
     add_website(website)
 
