@@ -4,7 +4,7 @@
 
 Проанализируйте интересующие вас страницы на предмет SEO-пригодности.
 
-<a>
+<a href="https://github.com/nerodnoy/python-project-83/blob/main/README_ru.md"> 
     <img height="20px" src="https://img.shields.io/badge/RU-flag.svg?color=555555&style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NTAgMzAwIj4NCjxwYXRoIGZpbGw9IiNmZmYiIGQ9Im0wLDBoNDUwdjEwMGgtNDUweiIvPg0KPHBhdGggZmlsbD0iIzAwZiIgZD0ibTAsMTAwaDQ1MHYxMDBoLTQ1MHoiLz4NCjxwYXRoIGZpbGw9IiNmMDAiIGQ9Im0wLDIwMGg0NTB2MTAwaC00NTB6Ii8+DQo8L3N2Zz4NCg==">
 </a>
 <a href="https://github.com/nerodnoy/python-project-83/blob/main/README.md"> 
