@@ -37,6 +37,37 @@ def execute_query(query, data=None, commit=False, fetchall=False):
         return result
 
 
+def create_tables():
+    """
+    Create tables in the database if they do not exist.
+    """
+    with psycopg2.connect(DATABASE_URL) as connection:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+            create_urls_table = '''
+                CREATE TABLE IF NOT EXISTS urls (
+                    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+                    name VARCHAR(255) UNIQUE NOT NULL,
+                    created_at TIMESTAMP NOT NULL
+                );
+            '''
+
+            create_url_checks_table = '''
+                CREATE TABLE IF NOT EXISTS url_checks (
+                    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+                    url_id BIGINT REFERENCES urls (id),
+                    status_code BIGINT,
+                    h1 text,
+                    title text,
+                    description text,
+                    created_at TIMESTAMP NOT NULL
+                );
+            '''
+
+            cursor.execute(create_urls_table)
+            cursor.execute(create_url_checks_table)
+
+            connection.commit()
+
 def get_urls_by_name(name):
     """
     Retrieve information about a URL by its name.
