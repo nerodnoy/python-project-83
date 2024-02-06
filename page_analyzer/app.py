@@ -22,14 +22,12 @@ import os
 from dotenv import load_dotenv
 from requests import RequestException
 from page_analyzer.validate import validate_url, get_url_data
-from page_analyzer.database import create_tables
+
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
-create_tables()
 
 
 @app.route('/')
