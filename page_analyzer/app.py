@@ -20,6 +20,12 @@ from page_analyzer.handlers import (
     # handle_success,
     format_timestamp
 )
+from page_analyzer.constants import (
+    URL_EXISTS,
+    URL_TOO_LONG,
+    # URL_INVALID,
+    URL_EMPTY
+)
 import os
 from dotenv import load_dotenv
 from requests import RequestException
@@ -49,8 +55,9 @@ def urls_post():
     Add new URL. Check if there is one provided. Validate the URL.
     Add it to db if this URL isn't already there. Raise an error if any occurs.
 
-    :return: Redirect to one URL page if new URL added or it is already in db.
-    Render index page with flash error if any.
+        Returns:
+             Redirect to one URL page if new URL added or it is already in db.
+             Render index page with flash error if any.
     """
 
     url = request.form.get('url')
@@ -60,21 +67,21 @@ def urls_post():
     error = check['error']
 
     if error:
-        if error == 'exists':
+        if error == URL_EXISTS:
 
             id = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
             return redirect(url_for(
-                'url_show',
+                'url_by_id',
                 id=id
             ))
         else:
             flash('Некорректный URL', 'alert-danger')
 
-            if error == 'zero':
+            if error == URL_EMPTY:
                 flash('URL обязателен', 'alert-danger')
-            elif error == 'length':
+            elif error == URL_TOO_LONG:
                 flash('URL превышает 255 символов', 'alert-danger')
 
             messages = get_flashed_messages(with_categories=True)
@@ -92,12 +99,12 @@ def urls_post():
 
         add_website(site)
 
-        id_ = get_urls_by_name(url)['id']
+        id = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
-            'url_show',
-            id_=id_
+            'url_by_id',
+            id=id
         ))
 
 
