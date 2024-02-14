@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import (
     Flask,
     render_template,
@@ -16,14 +18,11 @@ from page_analyzer.database import (
     get_urls_by_name
 )
 from page_analyzer.handlers import (
-    # handle_error,
-    # handle_success,
     format_timestamp
 )
 from page_analyzer.constants import (
     URL_EXISTS,
     URL_TOO_LONG,
-    # URL_INVALID,
     URL_EMPTY
 )
 import os
@@ -69,12 +68,12 @@ def urls_post():
     if error:
         if error == URL_EXISTS:
 
-            id = get_urls_by_name(url)['id']
+            id_ = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
             return redirect(url_for(
                 'url_by_id',
-                id=id
+                id_=id_
             ))
         else:
             flash('Некорректный URL', 'alert-danger')
@@ -94,37 +93,18 @@ def urls_post():
     else:
         site = {
             'url': url,
-            'created_at': format_timestamp()
+            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
         add_website(site)
 
-        id = get_urls_by_name(url)['id']
+        id_ = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
             'url_by_id',
-            id=id
+            id_=id_
         ))
-
-
-@app.get('/urls')
-def urls_get():
-    """
-    Handle the GET request to retrieve all URLs.
-
-        Returns:
-            str: Rendered HTML template with a list of URLs.
-    """
-    urls = get_urls_all()
-
-    messages = get_flashed_messages(with_categories=True)
-
-    return render_template(
-        'urls.html',
-        urls=urls,
-        messages=messages
-    )
 
 
 @app.route('/urls/<int:id>')
@@ -155,7 +135,26 @@ def url_by_id(id):
     except IndexError:
         return render_template(
             'error.html'
-        ), 500
+        ), 404
+
+
+@app.get('/urls')
+def urls_get():
+    """
+    Handle the GET request to retrieve all URLs.
+
+        Returns:
+            str: Rendered HTML template with a list of URLs.
+    """
+    urls = get_urls_all()
+
+    messages = get_flashed_messages(with_categories=True)
+
+    return render_template(
+        'urls.html',
+        urls=urls,
+        messages=messages
+    )
 
 
 @app.post('/urls/<int:id>/checks')
@@ -190,10 +189,10 @@ def url_check(id):
     ))
 
 
-@app.errorhandler(500)
+@app.errorhandler(404)
 def get_error(error):
     """
-    Handle the 500 Internal Server Error.
+    Handle the 404 Internal Server Error.
 
         Args:
             error: The error information.
@@ -203,7 +202,7 @@ def get_error(error):
     """
     return render_template(
         'error.html'
-    ), 500
+    ), 404
 
 
 if __name__ == '__main__':
