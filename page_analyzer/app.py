@@ -11,11 +11,13 @@ from page_analyzer.database import (
     get_urls_by_id,
     get_urls_all,
     get_checks_by_id,
-    add_check
+    add_check,
+    add_website,
+    get_urls_by_name
 )
 from page_analyzer.handlers import (
-    handle_error,
-    handle_success,
+    # handle_error,
+    # handle_success,
     format_timestamp
 )
 import os
@@ -44,21 +46,59 @@ def index():
 @app.post('/urls')
 def urls_post():
     """
-    Handle the POST request to add a new URL.
+    Add new URL. Check if there is one provided. Validate the URL.
+    Add it to db if this URL isn't already there. Raise an error if any occurs.
 
-        Returns:
-            str: Rendered HTML template for success or error page.
+    :return: Redirect to one URL page if new URL added or it is already in db.
+    Render index page with flash error if any.
     """
-    submitted_url = request.form.get('url')
-    validate = validate_url(submitted_url)
 
-    url = validate['url']
-    error = validate['error']
+    url = request.form.get('url')
+    check = validate_url(url)
+
+    url = check['url']
+    error = check['error']
 
     if error:
-        return handle_error(error, url)
+        if error == 'exists':
+
+            id = get_urls_by_name(url)['id']
+
+            flash('Страница уже существует', 'alert-info')
+            return redirect(url_for(
+                'url_show',
+                id=id
+            ))
+        else:
+            flash('Некорректный URL', 'alert-danger')
+
+            if error == 'zero':
+                flash('URL обязателен', 'alert-danger')
+            elif error == 'length':
+                flash('URL превышает 255 символов', 'alert-danger')
+
+            messages = get_flashed_messages(with_categories=True)
+            return render_template(
+                'index.html',
+                url=url,
+                messages=messages
+            ), 422
+
     else:
-        return handle_success(url)
+        site = {
+            'url': url,
+            'created_at': format_timestamp()
+        }
+
+        add_website(site)
+
+        id_ = get_urls_by_name(url)['id']
+
+        flash('Страница успешно добавлена', 'alert-success')
+        return redirect(url_for(
+            'url_show',
+            id_=id_
+        ))
 
 
 @app.get('/urls')
