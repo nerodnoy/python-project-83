@@ -2,7 +2,11 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
-from page_analyzer.constants import *
+from page_analyzer.constants import (
+    URL_TOO_LONG,
+    URL_NOT_FOUND,
+    URL_EXISTS
+)
 from page_analyzer.validate import (
     validate_url,
     get_url_data
