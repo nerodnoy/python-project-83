@@ -1,144 +1,155 @@
 import os
-import psycopg2
 from dotenv import load_dotenv
+from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
+
 
 load_dotenv()
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def execute_query(query, data=None, commit=False, fetchall=False):
+def get_all_urls() -> dict:
     """
-    Execute a SQL query on the database.
+    Query the database for all added URLs. Return only the last check info.
 
-    Args:
-        query (str): The SQL query to be executed.
-        data (tuple): The data to be passed to the query.
-        commit (bool): If True, commit the changes to the database.
-        fetchall (bool): If True, fetch all rows; if False, fetch one row.
-
-    Returns:
-        result: The result of the query execution.
+    Tables: urls, url_checks
+    :return: Dict of all urls, its id's, last check dates and status codes.
     """
-    with psycopg2.connect(DATABASE_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(query, data)
 
-            if commit:
-                connection.commit()
-                return
+    conn = connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        q_select = '''SELECT DISTINCT ON (urls.id)
+                        urls.id AS id,
+                        urls.name AS name,
+                        url_checks.created_at AS last_check,
+                        url_checks.status_code AS status_code
+                    FROM urls
+                    LEFT JOIN url_checks ON urls.id = url_checks.url_id
+                    AND url_checks.id = (SELECT MAX(id)
+                                        FROM url_checks
+                                        WHERE url_id = urls.id)
+                    ORDER BY urls.id DESC;'''
+        cur.execute(q_select)
+        urls = cur.fetchall()
+    conn.close()
 
-            if fetchall:
-                result = cursor.fetchall()
-            else:
-                result = cursor.fetchone()
-
-        return result
+    return urls
 
 
-def get_urls_by_name(name):
+def get_urls_by_id(id_: int) -> dict:
     """
-    Retrieve information about a URL by its name.
+    Query the database for one URL data based on its id.
 
-    Args:
-        name (str): The name of the URL.
-
-    Returns:
-        result: Information about the URL.
+    Tables: urls
+    :param id_: URL id.
+    :return: Dict containing one url data: id, name, creation date.
     """
-    query = 'SELECT * FROM urls WHERE name=(%s)'
-    return execute_query(query, [name])
+
+    conn = connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        q_select = '''SELECT *
+                    FROM urls
+                    WHERE id=(%s)'''
+        cur.execute(q_select, [id_])
+        urls = cur.fetchone()
+    conn.close()
+
+    return urls
 
 
-def get_urls_by_id(id):
+def get_urls_by_name(name: str) -> dict:
     """
-    Retrieve information about a URL by its ID.
+    Query the database for one URL data based on its name.
 
-    Args:
-        id (int): The ID of the URL.
-
-    Returns:
-        result: Information about the URL.
+    Tables: urls
+    :param name: URL name.
+    :return: Dict containing one url data: id, name, creation date.
     """
-    query = 'SELECT * FROM urls WHERE id=(%s)'
-    return execute_query(query, [id])
+
+    conn = connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        q_select = '''SELECT *
+                    FROM urls
+                    WHERE name=(%s)'''
+        cur.execute(q_select, [name])
+        urls = cur.fetchone()
+    conn.close()
+
+    return urls
 
 
-def get_checks_by_id(id):
+def get_checks_by_id(id_: int) -> dict:
     """
-    Retrieve checks associated with a URL by its ID.
+    Query the database for all URL checks.
 
-    Args:
-        id (int): The ID of the URL.
-
-    Returns:
-        result: List of checks associated with the URL.
+    Tables: url_checks
+    :param id_: URL id.
+    :return: Dict containing checks info: id, status code, h1, title,
+    description, check date.
     """
-    query = 'SELECT * FROM url_checks WHERE url_id=(%s) ORDER BY id DESC'
-    return execute_query(query, [id], fetchall=True)
+
+    conn = connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        q_select = '''SELECT *
+                    FROM url_checks
+                    WHERE url_id=(%s)
+                    ORDER BY id DESC'''
+        cur.execute(q_select, [id_])
+        checks = cur.fetchall()
+    conn.close()
+
+    return checks
 
 
-def get_urls_all():
+def add_site(site: dict) -> None:
     """
-    Retrieve information about all URLs with the latest check information.
+    Insert into database new URL.
 
-    Returns:
-        result: List of URLs with the latest check information.
+    Tables: urls
+    :param site: Dict containing URL and its creation date.
     """
-    query = '''
-        SELECT DISTINCT ON (urls.id)
-            urls.id AS id,
-            urls.name AS name,
-            url_checks.created_at AS last_check,
-            url_checks.status_code AS status_code
-        FROM urls
-        LEFT JOIN url_checks ON urls.id = url_checks.url_id
-            AND url_checks.id = (
-                SELECT MAX(id)
-                FROM url_checks
-                WHERE url_id = urls.id
-            )
-        ORDER BY urls.id DESC;
-    '''
-    return execute_query(query, fetchall=True)
+
+    conn = connect(DATABASE_URL)
+    with conn.cursor() as cur:
+        q_insert = '''INSERT
+                    INTO urls (name, created_at)
+                    VALUES (%s, %s)'''
+        cur.execute(q_insert, (
+            site['url'],
+            site['created_at']
+        ))
+        conn.commit()
+    conn.close()
 
 
-def add_website(name):
+def add_check(check: dict) -> None:
     """
-    Add a new website to the database.
+    Insert into database new check data.
 
-    Args:
-        name (dict): The dictionary containing the URL and creation timestamp.
+    Tables: url_checks
+    :param check: Dict containing url check data: URL id, check status code, h1,
+    title, description, check date
     """
-    query = 'INSERT INTO urls (name, created_at) VALUES (%s, %s)'
-    data = (name['url'], name['created_at'])
-    execute_query(query, data, commit=True)
 
-
-def add_check(check):
-    """
-    Add a new check result to the database.
-
-    Args:
-        check (dict): The dictionary containing check information.
-    """
-    query = '''
-        INSERT INTO url_checks (
-            url_id,
-            status_code,
-            h1,
-            title,
-            description,
-            created_at
-        ) VALUES (%s, %s, %s, %s, %s, %s)
-    '''
-    data = (
-        check['url_id'],
-        check['status_code'],
-        check['h1'],
-        check['title'],
-        check['description'],
-        check['checked_at']
-    )
-    execute_query(query, data, commit=True)
+    conn = connect(DATABASE_URL)
+    with conn.cursor() as cur:
+        q_insert = '''INSERT
+                    INTO url_checks(
+                        url_id,
+                        status_code,
+                        h1,
+                        title,
+                        description,
+                        created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)'''
+        cur.execute(q_insert, (
+            check['url_id'],
+            check['status_code'],
+            check['h1'],
+            check['title'],
+            check['description'],
+            check['checked_at']
+        ))
+        conn.commit()
+    conn.close()

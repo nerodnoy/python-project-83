@@ -1,62 +1,54 @@
-from page_analyzer.constants import (
-    URL_EXISTS,
-    URL_TOO_LONG,
-    URL_INVALID,
-    URL_EMPTY
-)
 import validators
+from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+
 from page_analyzer.database import get_urls_by_name
 
 
 def validate_url(url):
     """
-    Validate a URL for various criteria.
+    Validation and normalization for the entered URL. The URL must have a valid
+    address, it is mandatory and does not exceed 255 characters.
 
-        Args:
-            url (str): The URL to be validated.
-
-        Returns:
-            dict: A dictionary containing the validated URL and
-             any potential error.
+    :param url: Site URL.
+    :return: Dict of normalized url and errors if any.
     """
+
     error = None
 
     if len(url) == 0:
-        error = URL_EMPTY
+        error = 'zero'
     elif len(url) > 255:
-        error = URL_TOO_LONG
+        error = 'length'
     elif not validators.url(url):
-        error = URL_INVALID
+        error = 'invalid'
     else:
         parsed_url = urlparse(url)
-        valid_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
+        norm_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
 
-        same_url_found = get_urls_by_name(valid_url)
+        found = get_urls_by_name(norm_url)
 
-        if same_url_found:
-            error = URL_EXISTS
+        if found:
+            error = 'exists'
 
-        url = valid_url
+        url = norm_url
 
     valid = {'url': url, 'error': error}
 
     return valid
 
 
-def get_url_data(url):
+def get_url_data(url: str) -> dict:
     """
-    Retrieve data from a URL, including the HTTP status code, h1 tag, title tag,
-    and meta description tag.
+    Request provided URL. Save response code. Parse the page and check the
+    presence of <h1>, <title> and <meta name="description" content="...">
+    tags on the page.
 
-        Args:
-            url (str): The URL to retrieve data from.
-
-        Returns:
-            dict: A dictionary containing data retrieved from the URL.
+    :param url: Site URL.
+    :return: Dict of parsed and found data.
     """
+
     r = requests.get(url)
 
     if r.status_code != 200:

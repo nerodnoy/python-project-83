@@ -1,9 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
-{% block input %}
-<h1>Сайты</h1>
+{% block title %}
+    Анализатор страниц - Сайты
+{% endblock %}
+
+{% block main %}
+<h1>Sites</h1>
 <div class="table-responsive">
-    <table class="table table-bordered table-hover text-nowrap" data-test="checks">
+    <table class="table table-bordered table-hover text-nowrap" data-test="urls">
         <tbody>
             <tr>
                 <th>ID</th>
@@ -15,7 +19,7 @@
                 {% for url in urls %}
                 <tr>
                     <td>{{ url.id }}</td>
-                    <td><a href="{{ url_for('url_by_id', id=url.id) }}">{{ url.name }}</a></td>
+                    <td><a href="{{ url_for('url_show', id_=url.id) }}">{{ url.name }}</a></td>
                     <td>{{ url.last_check if url.last_check is not none }}</td>
                     <td>{{ url.status_code if url.status_code is not none }}</td>
                 </tr>

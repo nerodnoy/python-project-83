@@ -1,51 +1,79 @@
-from datetime import datetime
-
 from flask import (
     Flask,
     render_template,
     request,
-    flash,
-    get_flashed_messages,
+    redirect,
     url_for,
-    redirect
-)
-from page_analyzer.database import (
-    get_urls_by_id,
-    get_urls_all,
-    get_checks_by_id,
-    add_check,
-    add_website,
-    get_urls_by_name
-)
-from page_analyzer.handlers import (
-    format_timestamp
-)
-from page_analyzer.constants import (
-    URL_EXISTS,
-    URL_TOO_LONG,
-    URL_EMPTY
+    flash,
+    get_flashed_messages
 )
 import os
 from dotenv import load_dotenv
-from requests import RequestException
-from page_analyzer.validate import validate_url, get_url_data
+from datetime import datetime
+import requests
+
+from page_analyzer.validate import (
+    validate_url,
+    get_url_data
+)
+from page_analyzer.database import (
+    get_all_urls,
+    get_urls_by_id,
+    get_urls_by_name,
+    get_checks_by_id,
+    add_check,
+    add_site
+)
 
 
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY')
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """
+    Render 404 error page if the requested page is missing.
+
+    :return: Render 404 error page.
+    """
+
+    return render_template(
+        'error.html'
+    ), 404
 
 
 @app.route('/')
 def index():
     """
-    Render the index page.
+    Render index page.
 
-        Returns:
-            str: Rendered HTML template for the index page.
+    :return: Render index page.
     """
-    return render_template('index.html')
+
+    return render_template(
+        'index.html',
+    )
+
+
+@app.get('/urls')
+def urls_get():
+    """
+    Render all added URLs page with last check dates and status codes if any.
+
+    :return: Render all URLs page.
+    """
+
+    urls = get_all_urls()
+
+    messages = get_flashed_messages(with_categories=True)
+    return render_template(
+        'urls.html',
+        urls=urls,
+        messages=messages
+    )
 
 
 @app.post('/urls')
@@ -54,9 +82,8 @@ def urls_post():
     Add new URL. Check if there is one provided. Validate the URL.
     Add it to db if this URL isn't already there. Raise an error if any occurs.
 
-        Returns:
-             Redirect to one URL page if new URL added or it is already in db.
-             Render index page with flash error if any.
+    :return: Redirect to one URL page if new URL added or it is already in db.
+    Render index page with flash error if any.
     """
 
     url = request.form.get('url')
@@ -66,21 +93,21 @@ def urls_post():
     error = check['error']
 
     if error:
-        if error == URL_EXISTS:
+        if error == 'exists':
 
-            id = get_urls_by_name(url)['id']
+            id_ = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
             return redirect(url_for(
-                'url_by_id',
-                id=id
+                'url_show',
+                id_=id_
             ))
         else:
             flash('Некорректный URL', 'alert-danger')
 
-            if error == URL_EMPTY:
+            if error == 'zero':
                 flash('URL обязателен', 'alert-danger')
-            elif error == URL_TOO_LONG:
+            elif error == 'length':
                 flash('URL превышает 255 символов', 'alert-danger')
 
             messages = get_flashed_messages(with_categories=True)
@@ -96,113 +123,72 @@ def urls_post():
             'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-        add_website(site)
+        add_site(site)
 
-        id = get_urls_by_name(url)['id']
+        id_ = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
-            'url_by_id',
-            id=id
+            'url_show',
+            id_=id_
         ))
 
 
-@app.route('/urls/<int:id>')
-def url_by_id(id):
+@app.route('/urls/<int:id_>')
+def url_show(id_):
     """
-    Handle the request to display information about a
-    specific URL and its checks.
+    Render one URL page containing its parsed check data.
 
-        Args:
-            id (int): The ID of the URL.
-
-        Returns:
-            str: Rendered HTML template with information about
-            the URL and its checks.
+    :param id_: URL id.
+    :return: Render page or raise 404 error.
     """
+
     try:
-        url = get_urls_by_id(id)
-        checks = get_checks_by_id(id)
+        url = get_urls_by_id(id_)
+        checks = get_checks_by_id(id_)
 
         messages = get_flashed_messages(with_categories=True)
-
         return render_template(
-            'url.html',
+            'show.html',
             url=url,
             checks=checks,
             messages=messages
         )
     except IndexError:
         return render_template(
-            'error.html'
+            '404.html'
         ), 404
 
 
-@app.get('/urls')
-def urls_get():
+@app.post('/urls/<int:id_>/checks')
+def url_check(id_):
     """
-    Handle the GET request to retrieve all URLs.
+    Check requested URL. Add data to db or raise error.
 
-        Returns:
-            str: Rendered HTML template with a list of URLs.
+    :param id_: URL id.
+    :return: Redirect to one URL show page adding check data to db or returning
+    error if an error occured during check.
     """
-    urls = get_urls_all()
 
-    messages = get_flashed_messages(with_categories=True)
-
-    return render_template(
-        'urls.html',
-        urls=urls,
-        messages=messages
-    )
-
-
-@app.post('/urls/<int:id>/checks')
-def url_check(id):
-    """
-    Handle the POST request to perform a check on a specific URL.
-
-        Args:
-            id (int): The ID of the URL.
-
-        Returns:
-            str: Redirects to the URL details page after performing the check.
-        """
-    url = get_urls_by_id(id)['name']
+    url = get_urls_by_id(id_)['name']
 
     try:
         check = get_url_data(url)
 
-        check['url_id'] = id
-        check['checked_at'] = format_timestamp()
+        check['url_id'] = id_
+        check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         add_check(check)
 
         flash('Страница успешно проверена', 'alert-success')
 
-    except RequestException:
+    except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
 
     return redirect(url_for(
-        'url_by_id',
-        id=id
+        'url_show',
+        id_=id_
     ))
-
-
-@app.errorhandler(404)
-def get_error(error):
-    """
-    Handle the 404 Internal Server Error.
-
-        Args:
-            error: The error information.
-
-        Returns:
-            str: Rendered HTML template for the error page.
-    """
-    return render_template(
-        'error.html'
-    ), 404
 
 
 if __name__ == '__main__':

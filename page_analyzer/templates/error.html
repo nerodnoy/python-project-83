@@ -1,8 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
-{% block input %}
+{% block title %}
+    Page Analyzer - 404
+{% endblock %}
+
+{% block main %}
 <h1>Страница не найдена</h1>
 
 <p>Здесь нет того, что вы ищете.</p>
-<p><a href=" {{ url_for('index') }}">Вернуться на главную</a></p>
+<p><a href="/">Вернуться на главную</a></p>
 {% endblock %}
