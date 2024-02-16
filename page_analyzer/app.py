@@ -1,3 +1,12 @@
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+import requests
+from page_analyzer.constants import *
+from page_analyzer.validate import (
+    validate_url,
+    get_url_data
+)
 from flask import (
     Flask,
     render_template,
@@ -7,24 +16,14 @@ from flask import (
     flash,
     get_flashed_messages
 )
-import os
-from dotenv import load_dotenv
-from datetime import datetime
-import requests
-
-from page_analyzer.validate import (
-    validate_url,
-    get_url_data
-)
 from page_analyzer.database import (
-    get_all_urls,
+    get_urls_all,
     get_urls_by_id,
     get_urls_by_name,
     get_checks_by_id,
     add_check,
     add_site
 )
-
 
 load_dotenv()
 
@@ -48,9 +47,10 @@ def page_not_found(error):
 @app.route('/')
 def index():
     """
-    Render index page.
+    Render the index page.
 
-    :return: Render index page.
+        Returns:
+            str: Rendered HTML template for the index page.
     """
 
     return render_template(
@@ -61,12 +61,13 @@ def index():
 @app.get('/urls')
 def urls_get():
     """
-    Render all added URLs page with last check dates and status codes if any.
+    Handle the GET request to retrieve all URLs.
 
-    :return: Render all URLs page.
+        Returns:
+            str: Rendered HTML template with a list of URLs.
     """
 
-    urls = get_all_urls()
+    urls = get_urls_all()
 
     messages = get_flashed_messages(with_categories=True)
     return render_template(
@@ -79,11 +80,10 @@ def urls_get():
 @app.post('/urls')
 def urls_post():
     """
-    Add new URL. Check if there is one provided. Validate the URL.
-    Add it to db if this URL isn't already there. Raise an error if any occurs.
+    Handle the POST request to add a new URL.
 
-    :return: Redirect to one URL page if new URL added or it is already in db.
-    Render index page with flash error if any.
+        Returns:
+            str: Rendered HTML template for success or error page.
     """
 
     url = request.form.get('url')
@@ -93,21 +93,21 @@ def urls_post():
     error = check['error']
 
     if error:
-        if error == 'exists':
+        if error == URL_EXISTS:
 
-            id_ = get_urls_by_name(url)['id']
+            id = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
             return redirect(url_for(
-                'url_show',
-                id_=id_
+                'url_by_id',
+                id=id
             ))
         else:
             flash('Некорректный URL', 'alert-danger')
 
-            if error == 'zero':
+            if error == URL_NOT_FOUND:
                 flash('URL обязателен', 'alert-danger')
-            elif error == 'length':
+            elif error == URL_TOO_LONG:
                 flash('URL превышает 255 символов', 'alert-danger')
 
             messages = get_flashed_messages(with_categories=True)
@@ -125,31 +125,36 @@ def urls_post():
 
         add_site(site)
 
-        id_ = get_urls_by_name(url)['id']
+        id = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
-            'url_show',
-            id_=id_
+            'url_by_id',
+            id=id
         ))
 
 
-@app.route('/urls/<int:id_>')
-def url_show(id_):
+@app.route('/urls/<int:id>')
+def url_by_id(id):
     """
-    Render one URL page containing its parsed check data.
+    Handle the request to display information about a
+    specific URL and its checks.
 
-    :param id_: URL id.
-    :return: Render page or raise 404 error.
+        Args:
+            id (int): The ID of the URL.
+
+        Returns:
+            str: Rendered HTML template with information about
+            the URL and its checks.
     """
 
     try:
-        url = get_urls_by_id(id_)
-        checks = get_checks_by_id(id_)
+        url = get_urls_by_id(id)
+        checks = get_checks_by_id(id)
 
         messages = get_flashed_messages(with_categories=True)
         return render_template(
-            'show.html',
+            'url.html',
             url=url,
             checks=checks,
             messages=messages
@@ -160,22 +165,24 @@ def url_show(id_):
         ), 404
 
 
-@app.post('/urls/<int:id_>/checks')
-def url_check(id_):
+@app.post('/urls/<int:id>/checks')
+def url_check(id):
     """
-    Check requested URL. Add data to db or raise error.
+    Handle the POST request to perform a check on a specific URL.
 
-    :param id_: URL id.
-    :return: Redirect to one URL show page adding check data to db or returning
-    error if an error occured during check.
-    """
+        Args:
+            id (int): The ID of the URL.
 
-    url = get_urls_by_id(id_)['name']
+        Returns:
+            str: Redirects to the URL details page after performing the check.
+        """
+
+    url = get_urls_by_id(id)['name']
 
     try:
         check = get_url_data(url)
 
-        check['url_id'] = id_
+        check['url_id'] = id
         check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         add_check(check)
@@ -186,8 +193,8 @@ def url_check(id_):
         flash('Произошла ошибка при проверке', 'alert-danger')
 
     return redirect(url_for(
-        'url_show',
-        id_=id_
+        'url_by_id',
+        id=id
     ))
 
 

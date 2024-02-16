@@ -2,27 +2,30 @@ import validators
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
-
+from page_analyzer.constants import *
 from page_analyzer.database import get_urls_by_name
 
 
 def validate_url(url):
     """
-    Validation and normalization for the entered URL. The URL must have a valid
-    address, it is mandatory and does not exceed 255 characters.
+    Validate a URL for various criteria.
 
-    :param url: Site URL.
-    :return: Dict of normalized url and errors if any.
+        Args:
+            url (str): The URL to be validated.
+
+        Returns:
+            dict: A dictionary containing the validated URL and
+             any potential error.
     """
 
     error = None
 
     if len(url) == 0:
-        error = 'zero'
+        error = URL_NOT_FOUND
     elif len(url) > 255:
-        error = 'length'
+        error = URL_TOO_LONG
     elif not validators.url(url):
-        error = 'invalid'
+        error = URL_INVALID
     else:
         parsed_url = urlparse(url)
         norm_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
@@ -30,7 +33,7 @@ def validate_url(url):
         found = get_urls_by_name(norm_url)
 
         if found:
-            error = 'exists'
+            error = URL_EXISTS
 
         url = norm_url
 
@@ -39,16 +42,17 @@ def validate_url(url):
     return valid
 
 
-def get_url_data(url: str) -> dict:
+def get_url_data(url):
     """
-    Request provided URL. Save response code. Parse the page and check the
-    presence of <h1>, <title> and <meta name="description" content="...">
-    tags on the page.
+    Retrieve data from a URL, including the HTTP status code, h1 tag, title tag,
+    and meta description tag.
 
-    :param url: Site URL.
-    :return: Dict of parsed and found data.
+        Args:
+            url (str): The URL to retrieve data from.
+
+        Returns:
+            dict: A dictionary containing data retrieved from the URL.
     """
-
     r = requests.get(url)
 
     if r.status_code != 200:
