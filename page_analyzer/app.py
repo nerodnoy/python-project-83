@@ -68,12 +68,12 @@ def urls_post():
     if error:
         if error == URL_EXISTS:
 
-            id_ = get_urls_by_name(url)['id']
+            id = get_urls_by_name(url)['id']
 
             flash('Страница уже существует', 'alert-info')
             return redirect(url_for(
                 'url_by_id',
-                id_=id_
+                id=id
             ))
         else:
             flash('Некорректный URL', 'alert-danger')
@@ -98,12 +98,12 @@ def urls_post():
 
         add_website(site)
 
-        id_ = get_urls_by_name(url)['id']
+        id = get_urls_by_name(url)['id']
 
         flash('Страница успешно добавлена', 'alert-success')
         return redirect(url_for(
             'url_by_id',
-            id_=id_
+            id=id
         ))
 
 
